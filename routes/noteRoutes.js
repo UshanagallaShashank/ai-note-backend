@@ -79,6 +79,27 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
+router.get('/:noteId', authMiddleware, async (req, res) => {
+  try {
+    const loggedInUserId = req.user; 
+    const { noteId } = req.params; 
+
+    const note = await Note.findById(noteId);
+    if (!note) {
+      return res.status(404).json({ message: 'Note not found' });
+    }
+
+    if (note.userId.toString() !== loggedInUserId.toString() && !req.user.isAdmin) {
+      return res.status(403).json({ message: 'Access denied. You can only access your own notes' });
+    }
+
+    res.status(200).json({ note });
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching note', error: err.message });
+  }
+});
+
+
 // Update a note
 router.put('/:id', authMiddleware, async (req, res) => {
   const { title, description, startDate, endDate, priority, isCompleted } = req.body;

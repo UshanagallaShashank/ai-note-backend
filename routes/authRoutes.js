@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -38,28 +37,6 @@ router.post('/register', async (req, res) => {
 
 
     res.status(201).json({ message: 'User registered successfully', user: newUser });
-=======
-  
-const express = require('express');
-const User = require('../models/user');
-const jwt = require('jsonwebtoken');
-
-const router = express.Router();
-
-// Register a new user
-router.post('/register', async (req, res) => {
-  const { username, password } = req.body;
-
-  try {
-    const userExists = await User.findOne({ username });
-    if (userExists) return res.status(400).json({ message: 'User already exists' });
-
-    const user = new User({ username, password });
-    await user.save();
-
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.status(201).json({ message: 'User registered successfully', token });
->>>>>>> 916248d22c2765a5b2f4498bcda2872a765fc383
   } catch (err) {
     res.status(500).json({ message: 'Error registering user', error: err.message });
   }
@@ -67,7 +44,6 @@ router.post('/register', async (req, res) => {
 
 // Login user
 router.post('/login', async (req, res) => {
-<<<<<<< HEAD
   try {
     console.log('Request Body:', req.body);
 
@@ -101,25 +77,10 @@ router.post('/login', async (req, res) => {
     res.status(200).json({ message: 'Login successful', token, user });
   } catch (err) {
     console.error('Error during login:', err.message);
-=======
-  const { username, password } = req.body;
-
-  try {
-    const user = await User.findOne({ username });
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
-
-    const isMatch = await user.matchPassword(password);
-    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
-
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.status(200).json({ message: 'Login successful', token });
-  } catch (err) {
->>>>>>> 916248d22c2765a5b2f4498bcda2872a765fc383
     res.status(500).json({ message: 'Error logging in', error: err.message });
   }
 });
 
-<<<<<<< HEAD
 
 // Fetch user profile
 router.get('/profile', authMiddleware, async (req, res) => {
@@ -242,6 +203,4 @@ router.put('/habits/:habitId/reset', authMiddleware, async (req, res) => {
   }
 });
 
-=======
->>>>>>> 916248d22c2765a5b2f4498bcda2872a765fc383
 module.exports = router;

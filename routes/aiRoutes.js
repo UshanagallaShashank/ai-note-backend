@@ -199,7 +199,7 @@ router.get('/insights', authMiddleware, async (req, res) => {
   try {
     // Assuming authMiddleware sets req.user with user details
     const userId = req.user; // Use correct property from req.user
-    console.log("object",userId)
+    // console.log("object",userId)
     if (!userId) {
       return res.status(401).json({ message: "User not authenticated" });
     }

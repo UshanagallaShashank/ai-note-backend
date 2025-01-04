@@ -188,7 +188,7 @@ const startScheduler = async () => {
   console.log("Running task notification scheduler...");
 
   const now = new Date();
-  const soon = new Date(now.getTime() + 4 * 60 * 60 * 1000); // 4 hours from now
+  const soon = new Date(now.getTime() + 30 * 60 * 1000); // 30 mins from now
 
 
   try {
@@ -213,7 +213,7 @@ const startScheduler = async () => {
           // Check if 24 hours have passed since last notification
           const lastNotification = new Date(note.lastNotificationSent);
           const diff = now - lastNotification; // difference in milliseconds
-          const oneDayInMs = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+          const oneDayInMs =12 * 60 * 60 * 1000; // 24 hours in milliseconds
 
           if (diff >= oneDayInMs) {
             // If it's been 24 hours or more, send a notification
@@ -229,12 +229,8 @@ const startScheduler = async () => {
 
             // Save the updated note
             await note.save();
-          } else {
-            console.log(`Skipping email for ${user.email} as the last notification was sent within 24 hours.`);
-          }
-        } else {
-          console.warn(`No valid user found for task "${note.title}"`);
-        }
+          } 
+        } 
 
       } catch (err) {
         console.error(`Error processing note "${note.title}":`, err.message);
@@ -264,7 +260,7 @@ const startScheduler = async () => {
     
 
     // Respond after all emails are sent
-    console.log('All emails have been sent.');
+    console.log('All emails have been sent.', new Date());
 
   } catch (err) {
     console.error('Error during notification scheduling:', err.message);

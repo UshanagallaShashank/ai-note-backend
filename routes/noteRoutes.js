@@ -181,7 +181,7 @@ const calculateTimeLeft = (endDate) => {
 
 router.get('/notes-by-time', authMiddleware, async (req, res) => {
   try {
-    console.log("user: ",req.user)
+    // console.log("user: ",req.user)
     const notes = await Note.find({ userId: req.user });
 
     if (!notes.length) {

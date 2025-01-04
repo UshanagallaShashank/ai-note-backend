@@ -529,7 +529,7 @@ function lifestyleSuggestions(notes) {
  * @returns {string} - A time management tip.
  */
 function timeManagementTips(notes, user) {
-  console.log("object",user)
+  // console.log("object",user)
   if (!notes.length) {
     return [
       "No tasks logged. Start your day by planning and setting clear goals.",

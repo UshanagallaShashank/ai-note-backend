@@ -56,7 +56,7 @@ router.post('/login', async (req, res) => {
     // Check if the user exists
     const user = await User.findOne({ email });
     if (!user) {
-      console.error('User not found');
+      // console.error('User not found');
       return res.status(400).json({ message: 'User not found' });
     }
 
@@ -71,9 +71,9 @@ router.post('/login', async (req, res) => {
     // Generate JWT
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
-    console.log("token : ",token)
+    // console.log("token : ",token)
 
-    console.log('Login successful:', email);
+    // console.log('Login successful:', email);
     res.status(200).json({ message: 'Login successful', token, user });
   } catch (err) {
     console.error('Error during login:', err.message);
@@ -155,7 +155,7 @@ router.put('/habits/:habitId', authMiddleware, async (req, res) => {
   try {
     const { habitId } = req.params;
     const { streak } = req.body;
-    console.log("object: ",req.user)
+    // console.log("object: ",req.user)
     const user = await User.findById(req.user);
       // console.log(user)
     if (!user) {

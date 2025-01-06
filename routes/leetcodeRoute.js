@@ -39,7 +39,7 @@ let data="",filteredQuestions=""
 
   // Construct the URL dynamically based on the input
   const url = `https://leetcode.com/problems/${problemValue}/description`;
-  
+
   const browser = await chromium.launch({ headless: true, args: ['--disable-gpu', '--no-sandbox'] });
 
   // Create a new browser context and set the user agent there
@@ -48,7 +48,7 @@ let data="",filteredQuestions=""
   });
 
   try {
-    const page = await browser.newPage();
+    const page = await context.newPage();
     await page.setViewportSize({ width: 1600, height: 2000 }); // Set viewport size
 
     // Navigate to the target URL

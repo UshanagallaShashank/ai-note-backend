@@ -1,0 +1,53 @@
+### Get Screenshot of the Problem
+
+POST  http://localhost:5000/api/leetcode/capture-screenshot 
+
+Content-Type: application/json
+
+{
+  "problemValue":"number-of-ways-to-reorder-array-to-get-same-bst"
+}
+###
+
+
+### POST request to capture screenshot of a LeetCode problem
+
+POST http://localhost:5000/api/leetcode/capture-screenshot 
+Content-Type: application/json
+{
+  "problemValue": "number-of-ways-to-reorder-array-to-get-same-bst"
+}
+
+###
+
+
+
+### POST request to fetch a random question based on difficulty
+
+POST http://localhost:5000/api/leetcode/fetch-random-question HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "difficulty": "Medium"
+}
+
+###
+
+### POST request to capture a random screenshot based on difficulty with token
+
+### POST request to capture a random screenshot based on difficulty with token
+
+POST http://localhost:5000/api/leetcode//capture-screenshot HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Nzc1YTllZjBmZjZhN2ZkMjg4ZTM5MzYiLCJpYXQiOjE3MzYxOTMwODIsImV4cCI6MTczNjI3OTQ4Mn0.K0tbqb1Z507P-1fEU_Q6rafLCKI1KY2QFteDRxYcJJ8
+Accept: application/json
+
+{
+  "difficulty": "Medium"
+}
+
+###
+
+
+###

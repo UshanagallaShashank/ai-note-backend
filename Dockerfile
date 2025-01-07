@@ -1,32 +1,34 @@
-# First stage: Install dependencies and Puppeteer
-FROM ghcr.io/puppeteer/puppeteer:19.7.2 AS puppeteer-base
+# Use the official Node.js image as a base
+FROM node:16
+
+# Install Puppeteer and set the Chromium executable path
+FROM ghcr.io/puppeteer/puppeteer:19.7.2
 
 # Set environment variables for Puppeteer
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the package.json files for dependencies
+# Ensure that the app directory and its files have correct permissions
+RUN chown -R root:root /app
+RUN chmod -R 755 /app
+
+# Copy the package.json and package-lock.json
 COPY package*.json ./
 
-# Install dependencies
+# Install dependencies as root user
+USER root
 RUN npm install
+
+# Install Playwright dependencies
 RUN npx playwright install
 
-# Second stage: Final image for running the app
-FROM node:16 AS final
-
-# Set working directory in the final image
-WORKDIR /app
-
-# Copy necessary files from the Puppeteer image (dependencies and installation)
-COPY --from=puppeteer-base /app /app
-
-# Copy the rest of your application files
+# Copy the rest of the application files
 COPY . .
 
-# Expose the port the app will run on
+# Expose port 3000 for the application
 EXPOSE 3000
 
 # Start the application

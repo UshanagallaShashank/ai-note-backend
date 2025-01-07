@@ -5,7 +5,8 @@ const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
 const authMiddleware = require('../middleware/auth');
-const puppeteer = require('puppeteer');
+const axios = require('axios');
+const cheerio = require('cheerio');
 
 // router.post('/capture-screenshot',authMiddleware, async (req, res) => {
 
@@ -281,7 +282,50 @@ const puppeteer = require('puppeteer');
 // const router = express.Router();
 
 // Your route logic
-router.post('/capture-screenshot', async (req, res) => {
+
+
+// router.post('/capture-screenshot', async (req, res) => {
+//   const { difficulty } = req.body;
+
+//   if (!difficulty) {
+//     return res.status(400).json({ error: 'Difficulty is required' });
+//   }
+
+//   try {
+//     const browser = await puppeteer.launch({
+//       headless: true,
+//       args: [
+//         "--disable-setuid-sandbox",
+//         "--no-sandbox",
+//         "--single-process",
+//         "--no-zygote",
+//       ],
+//       executablePath:
+//       process.env.NODE_ENV === "production"
+//         ? process.env.PUPPETEER_EXECUTABLE_PATH
+//         : puppeteer.executablePath(),
+//     });
+//     const page = await browser.newPage();
+
+//     const url = 'https://leetcode.com/problems/two-sum/'; // Example URL
+//     await page.goto(url, { waitUntil: 'domcontentloaded' });
+
+//     await page.screenshot({ path: 'screenshot.png', fullPage: true });
+
+//     res.sendFile('screenshot.png', { root: __dirname }, () => {
+//       fs.unlinkSync('screenshot.png'); // Clean up after sending
+//     });
+
+//     await browser.close();
+//     res.status(200).json({message:"suuccess"})
+//   } catch (error) {
+//     console.error('Error during screenshot capture:', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
+
+
+router.post('/capture-data', async (req, res) => {
   const { difficulty } = req.body;
 
   if (!difficulty) {
@@ -289,38 +333,32 @@ router.post('/capture-screenshot', async (req, res) => {
   }
 
   try {
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        "--disable-setuid-sandbox",
-        "--no-sandbox",
-        "--single-process",
-        "--no-zygote",
-      ],
-      executablePath:
-      process.env.NODE_ENV === "production"
-        ? process.env.PUPPETEER_EXECUTABLE_PATH
-        : puppeteer.executablePath(),
-    });
-    const page = await browser.newPage();
-
-    const url = 'https://leetcode.com/problems/two-sum/'; // Example URL
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
-
-    await page.screenshot({ path: 'screenshot.png', fullPage: true });
-
-    res.sendFile('screenshot.png', { root: __dirname }, () => {
-      fs.unlinkSync('screenshot.png'); // Clean up after sending
+    const url = 'https://leetcode.com/problems/two-sum/'; 
+    const { data: html } = await axios.get(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+      },
     });
 
-    await browser.close();
-    res.status(200).json({message:"suuccess"})
+    // Load the HTML into Cheerio for parsing
+    const $ = cheerio.load(html);
+
+    // Extract content based on selectors
+    const title = $('div.css-v3d350 h4').text(); // Example: Update with correct selector
+    const description = $('div.content__u3I1').text(); // Update selector based on the LeetCode page structure
+    const constraints = $('div.constraints__u3I1').text();
+
+    // Return the extracted data
+    res.status(200).json({
+      title: title.trim(),
+      description: description.trim(),
+      constraints: constraints.trim(),
+    });
   } catch (error) {
-    console.error('Error during screenshot capture:', error);
+    console.error('Error during data capture:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
 
 
 router.post('/fetch-random-question', authMiddleware,async (req, res) => {

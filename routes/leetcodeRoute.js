@@ -31,7 +31,7 @@ let data="",filteredQuestions=""
   }catch(e){
     console.log("error",e)
   }
-    try {
+
       const randomQuestion = filteredQuestions[Math.floor(Math.random() * filteredQuestions.length)];
  
 
@@ -48,10 +48,6 @@ let data="",filteredQuestions=""
     userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
   });
 
-    } catch (error) {
-      console.log("error",e)
-      return res.status(400).json({error:`error is ${e}`})
-    }
   try {
     const page = await context.newPage();
     await page.setViewportSize({ width: 1600, height: 2000 }); 

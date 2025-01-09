@@ -29,7 +29,9 @@ let data="",filteredQuestions=""
     if (filteredQuestions.length === 0) {
       return res.status(404).json({ message: 'No questions found for the specified difficulty' });
     }
-  }catch(e){}
+  }catch(e){
+    console.log("error",e)
+  }
     // Randomly select a question
     const randomQuestion = filteredQuestions[Math.floor(Math.random() * filteredQuestions.length)];
  
@@ -135,7 +137,7 @@ let data="",filteredQuestions=""
             color: #76c7c0;
             text-decoration: none;
           }
-            
+
         </style>
       </head>
       <body>
@@ -166,15 +168,9 @@ let data="",filteredQuestions=""
       fullPage: true,
     });
 
-    // console.log('Captured screenshot of the first element with class "elfjS".');
-
-    // Send the image file as a response
     res.sendFile(screenshotPath, () => {
-      // Clean up the image after sending
       fs.unlinkSync(screenshotPath);
     });
-
-    // Close the browser
    
   } catch (error) {
     console.error('Error during screenshot capture:', error);
@@ -273,7 +269,7 @@ router.post('/capture-screenshot', authMiddleware, async (req, res) => {
 
     await browser.close();
   } catch (error) {
-    console.error('Error during screenshot capture:', error);
+    console.log('Error during screenshot capture:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });

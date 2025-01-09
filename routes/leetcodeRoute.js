@@ -10,7 +10,7 @@ const cheerio = require('cheerio');
 
 router.post('/capture-screenshot',authMiddleware, async (req, res) => {
 
-  const { difficulty } = req.body; // Extracting the difficulty from the body of the POST request
+  const { difficulty } = req.body; 
 
   if (!difficulty) {
     return res.status(400).json({ message: 'Difficulty is required' });
@@ -23,7 +23,6 @@ let data="",filteredQuestions=""
       return res.status(500).json({ message: 'Failed to fetch questions' });
     }
 
-    // Filter questions based on difficulty
      filteredQuestions = data.filter((q) => q.difficulty === difficulty);
 
     if (filteredQuestions.length === 0) {
@@ -32,33 +31,35 @@ let data="",filteredQuestions=""
   }catch(e){
     console.log("error",e)
   }
-    // Randomly select a question
-    const randomQuestion = filteredQuestions[Math.floor(Math.random() * filteredQuestions.length)];
+    try {
+      const randomQuestion = filteredQuestions[Math.floor(Math.random() * filteredQuestions.length)];
  
 
-  const problemValue = randomQuestion.titleSlug; //"number-of-ways-to-reorder-array-to-get-same-bst")
+  const problemValue = randomQuestion.titleSlug;
   if (!problemValue) {
     return res.status(400).json({ error: 'Missing "problemValue" query parameter' });
   }
 
-  // Construct the URL dynamically based on the input
   const url = `https://leetcode.com/problems/${problemValue}/description`;
 
   const browser = await chromium.launch({ headless: true, args: ['--disable-gpu', '--no-sandbox'] });
 
-  // Create a new browser context and set the user agent there
   const context = await browser.newContext({
     userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
   });
 
+    } catch (error) {
+      console.log("error",e)
+      return res.status(400).json({error:`error is ${e}`})
+    }
   try {
     const page = await context.newPage();
-    await page.setViewportSize({ width: 1600, height: 2000 }); // Set viewport size
+    await page.setViewportSize({ width: 1600, height: 2000 }); 
 
-    // Navigate to the target URL
+
     await page.goto(url, { waitUntil: 'domcontentloaded' });
     await  page.waitForSelector('.elfjS',{timeout:5000});
-    // Retry logic for waiting for the selector
+
     let retries = 3;
     let elements = [];
     while (retries > 0) {
@@ -77,14 +78,14 @@ let data="",filteredQuestions=""
       return res.status(404).json({ error: 'Element not found' });
     }
 
-    // Access the first element (0th index)
+
     const firstElement = elements[0];
     let innerHTML = await firstElement.innerHTML();
 
-    // Add a class name to every tag in the innerHTML
-    innerHTML = innerHTML.replace(/<(\w+)/g, '<$1 class="inner-element"'); // Add a class "inner-element" to each tag
 
-    // New HTML structure for the dark theme UI
+    innerHTML = innerHTML.replace(/<(\w+)/g, '<$1 class="inner-element"'); 
+
+
     const newHTML = `
       <!DOCTYPE html>
       <html lang="en">

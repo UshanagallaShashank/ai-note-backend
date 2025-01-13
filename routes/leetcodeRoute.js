@@ -1,14 +1,14 @@
 const express = require('express');
 const fetchRandomQuestions=require("../utils/fetchleetcode")
 const router = express.Router();
-const { chromium } = require('playwright');
+const { chromium } = require('playwright-chromium');
 const fs = require('fs');
 const path = require('path');
 const authMiddleware = require('../middleware/auth');
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-router.post('/capture-screenshot',authMiddleware, async (req, res) => {
+router.post('/capture-screenshot', async (req, res) => {
 
   const { difficulty } = req.body; 
 
@@ -179,97 +179,6 @@ let data="",filteredQuestions=""
 });
 
 
-router.post('/capture-screenshot', authMiddleware, async (req, res) => {
-  const { difficulty } = req.body; // Extract difficulty level from request body
-
-  if (!difficulty) {
-    return res.status(400).json({ message: 'Difficulty is required' });
-  }
-
-  try {
-    const data = await fetchRandomQuestions();
-
-    if (!data) {
-      return res.status(500).json({ message: 'Failed to fetch questions' });
-    }
-
-    // Filter questions based on difficulty
-    const filteredQuestions = data.filter((q) => q.difficulty === difficulty);
-
-    if (filteredQuestions.length === 0) {
-      return res.status(404).json({ message: 'No questions found for the specified difficulty' });
-    }
-
-    // Select a random question
-    const randomQuestion = filteredQuestions[Math.floor(Math.random() * filteredQuestions.length)];
-    const problemValue = randomQuestion.titleSlug;
-
-    if (!problemValue) {
-      return res.status(400).json({ error: 'Missing "problemValue" query parameter' });
-    }
-
-    const url = `https://leetcode.com/problems/${problemValue}/description`;
-
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-gpu'],
-      executablePath:
-        process.env.NODE_ENV === 'production'
-          ? process.env.PUPPETEER_EXECUTABLE_PATH
-          : puppeteer.executablePath(),
-    });
-
-    const page = await browser.newPage();
-    await page.setViewport({ width: 1600, height: 2000 });
-
-    // Navigate to the LeetCode problem description page
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('.elfjS', { timeout: 5000 });
-
-    const element = await page.$('.elfjS');
-    const innerHTML = await element.evaluate((el) => el.innerHTML);
-
-    const newHTML = `
-      <html>
-        <head>
-          <style>
-            body { font-family: 'JetBrains Mono', monospace; background: #2e2e2e; color: #f5f5f5; margin: 0; padding: 40px 0; display: flex; justify-content: center; align-items: flex-start; }
-            .container { width: 90%; max-width: 1200px; background-color: #333; padding: 40px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7); }
-            h1 { color: #76c7c0; text-align: center; font-size: 40px; margin-bottom: 20px; }
-            .content { font-size: 20px; color: #f5f5f5; line-height: 1.8; overflow: auto; }
-            footer { margin-top: 40px; font-size: 14px; color: #888; text-align: center; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <h1>Captured Content</h1>
-            <div class="content">${innerHTML}</div>
-            <footer>Generated using Puppeteer</footer>
-          </div>
-        </body>
-      </html>
-    `;
-
-    await page.setContent(newHTML);
-
-    const imagesDir = path.join(__dirname, '..', 'images');
-    if (!fs.existsSync(imagesDir)) {
-      fs.mkdirSync(imagesDir, { recursive: true });
-    }
-
-    const screenshotPath = path.join(imagesDir, `${problemValue}.png`);
-    await page.screenshot({ path: screenshotPath, fullPage: true });
-
-    res.sendFile(screenshotPath, () => {
-      fs.unlinkSync(screenshotPath);
-    });
-
-    await browser.close();
-  } catch (error) {
-    console.log('Error during screenshot capture:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
 
 // const express = require('express');
 // const puppeteer = require('puppeteer'); // Import puppeteer here

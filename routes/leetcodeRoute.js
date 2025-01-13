@@ -178,8 +178,6 @@ let data="",filteredQuestions=""
   }
 });
 
-
-
 // const express = require('express');
 // const puppeteer = require('puppeteer'); // Import puppeteer here
 // const router = express.Router();

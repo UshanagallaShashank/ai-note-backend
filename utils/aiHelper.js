@@ -242,13 +242,10 @@ const tokenizer = new natural.WordTokenizer();
 function summarizeNotes(notes) {
   if (!notes.length) return "No tasks for today! You're all caught up.";
 
-  // Combine all descriptions into a single string
   const descriptions = notes.map(note => note.description || "").join(". ");
 
-  // Tokenize descriptions
   const tokens = tokenizer.tokenize(descriptions);
 
-  // Calculate word frequency, filtering out common stopwords and short words
   const stopwords = new Set([
     "the", "and", "is", "in", "to", "of", "a", "on", "for", "with", "at", "this", "that",
   ]);
@@ -260,23 +257,19 @@ function summarizeNotes(notes) {
       return acc;
     }, {});
 
-  // Sort keywords by frequency and get the top 10
   const sortedKeywords = Object.entries(frequentWords)
     .sort(([, freqA], [, freqB]) => freqB - freqA)
     .slice(0, 10);
 
-  // Focus areas
   const focusAreas = sortedKeywords.map(([word, freq]) => `${word} (${freq} times)`);
   const focusSummary = focusAreas.length
     ? `Today's focus areas include: ${focusAreas.join(", ")}.`
     : "No significant focus areas detected.";
 
-  // Total and completed notes
   const totalNotes = notes.length;
   const completedNotes = notes.filter(note => note.isCompleted).length;
   const completionRate = ((completedNotes / totalNotes) * 100).toFixed(2);
 
-  // Time-based analysis
   const overdueTasks = notes.filter(note => new Date(note.endDate) < new Date());
   const upcomingTasks = notes.filter(
     note => new Date(note.startDate) > new Date() && !note.isCompleted
@@ -290,13 +283,11 @@ function summarizeNotes(notes) {
     ? `You have ${upcomingTasks.length} upcoming tasks. Plan ahead to stay productive.`
     : "No upcoming tasks logged.";
 
-  // Priority analysis
   const highPriorityTasks = notes.filter(note => note.priority === 'high');
   const prioritySummary = highPriorityTasks.length
     ? `You have ${highPriorityTasks.length} high-priority tasks to focus on.`
     : "No high-priority tasks detected.";
 
-  // Combined summary
   return `
     Summary for today:
     - Total tasks: ${totalNotes}

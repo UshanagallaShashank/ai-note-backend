@@ -9,7 +9,9 @@ const cors = require('cors');
 const mailschedulerRoute=require("./routes/mailschedulerRoute")
 const AdminNoteRoutes=require("./routes/Admin/AdminNotes")
 const AdminUserRoutes=require("./routes/Admin/Adminaccess")
-const leetcodeRoute=require('./routes/leetcodeRoute')
+const leetcodeRoute=require('./routes/leetcodeRoute');
+const geminiRoute=require('./routes/AI/GeminiRoute');
+
 
 dotenv.config();
 
@@ -39,6 +41,7 @@ app.use('/api/mail', mailschedulerRoute);
 app.use('/api/adminnote', AdminNoteRoutes);
 app.use("/api/adminuser",AdminUserRoutes);
 app.use('/api/leetcode', leetcodeRoute);
+app.use('/api/geminiroute',geminiRoute );
 app.get('/', (req, res) => {
   res.status(200).json({ message: 'Server is running' });
 });

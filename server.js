@@ -11,6 +11,9 @@ const AdminNoteRoutes=require("./routes/Admin/AdminNotes")
 const AdminUserRoutes=require("./routes/Admin/Adminaccess")
 const leetcodeRoute=require('./routes/leetcodeRoute');
 const geminiRoute=require('./routes/AI/GeminiRoute');
+const firecrawlerRoute=require("./routes/AI/Firecrawler")
+const crawler=require("./routes/AI/Crawler")
+const urlcrawler=require("./routes/AI/UrlCrawler")
 
 
 dotenv.config();
@@ -42,10 +45,12 @@ app.use('/api/adminnote', AdminNoteRoutes);
 app.use("/api/adminuser",AdminUserRoutes);
 app.use('/api/leetcode', leetcodeRoute);
 app.use('/api/geminiroute',geminiRoute );
+app.use('/api/fire',firecrawlerRoute);
 app.get('/', (req, res) => {
   res.status(200).json({ message: 'Server is running' });
 });
-
+app.use('/api/cra',crawler);
+app.use('/api/craw/',urlcrawler)
 
 // scheduleTaskNotification();
 

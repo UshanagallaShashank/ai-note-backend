@@ -5,8 +5,6 @@ require('dotenv').config();
 
 const router = express.Router();
 
-// Initialize FireCrawlApp with API key from the environment variable
-const firecrawl = new FireCrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
 
 /**
  * POST /api/extract-solution
@@ -15,6 +13,9 @@ const firecrawl = new FireCrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
  */
 router.post('/ex', async (req, res) => {
   try {
+    const apiKeys = process.env.FIRECRAWL_API_KEYS ? process.env.FIRECRAWL_API_KEYS.split(',') : [];
+    const crawlapi = apiKeys[Math.floor(Math.random() * apiKeys.length)];
+    const firecrawl = new FireCrawlApp({ apiKey: crawlapi });
     const { url } = req.body;
 
     // Validate that URL is provided

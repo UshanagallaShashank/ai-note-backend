@@ -3,8 +3,6 @@ const FirecrawlApp = require('@mendable/firecrawl-js').default;
 
 const router = express.Router();
 
-// Initialize FirecrawlApp with API key
-const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
 
 /**
  * POST /api/crawl-solutions
@@ -14,6 +12,10 @@ const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
  */
 router.post('/crawl-sol', async (req, res) => {
   try {
+
+    const apiKeys = process.env.FIRECRAWL_API_KEYS ? process.env.FIRECRAWL_API_KEYS.split(',') : [];
+    const crawlapi = apiKeys[Math.floor(Math.random() * apiKeys.length)];
+    const firecrawl = new FireCrawlApp({ apiKey: crawlapi });
     const { slug } = req.body;
     const url = `https://leetcode.com/problems/${slug}/solutions/`;
 

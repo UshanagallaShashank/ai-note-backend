@@ -14,6 +14,7 @@ const geminiRoute=require('./routes/AI/GeminiRoute');
 const firecrawlerRoute=require("./routes/AI/Firecrawler")
 const crawler=require("./routes/AI/Crawler")
 const urlcrawler=require("./routes/AI/UrlCrawler")
+const bulkurls=require("./routes/AI/BulkProcessUrls")
 
 
 dotenv.config();
@@ -51,6 +52,7 @@ app.get('/', (req, res) => {
 });
 app.use('/api/cra',crawler);
 app.use('/api/craw/',urlcrawler)
+app.use('/api/bulk',bulkurls)
 
 // scheduleTaskNotification();
 

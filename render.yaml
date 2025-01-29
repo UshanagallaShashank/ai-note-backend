@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: ai-note-backend
+    env: node
+    buildCommand: npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD
+        value: "1" # Skip browser download during npm install

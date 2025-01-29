@@ -117,7 +117,7 @@ async function scrapeLeetCodeSolutions(slug, websiteUrl) {
 
     try {
       await    page.goto(websiteUrl, { waitUntil: 'domcontentloaded' });
-        await page.waitForTimeout(5000);
+        await page.waitForTimeout(10000);
     // await page.waitForSelector('.group.flex.w-full.cursor-pointer.flex-col.gap-1.5.px-4.pt-3', { state: 'visible' });
 
         // Extract all solution links

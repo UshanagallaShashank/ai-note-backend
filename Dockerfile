@@ -15,10 +15,19 @@ RUN apt-get update && \
 
 WORKDIR /app
 
+# Copy package files first for caching
 COPY package*.json ./
-COPY . .
 
+# Install Node dependencies
 RUN npm install
+
+# Install Playwright browsers
 RUN npx playwright install --with-deps chromium
 
-CMD ["npm", "start"]
+# Copy source code
+COPY . .
+
+# Expose port (match your Express server's port)
+EXPOSE 3000
+
+CMD ["npm", "run","dev"]
